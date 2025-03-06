@@ -9,7 +9,7 @@ on:
       FEIL:
         description: "配置文件"
         required: true
-        default: 'oneplus_ace3_pro_v'
+        default: 'oneplus_pad2_v'
       CPUD:
         description: "处理器代号"
         required: true
@@ -78,8 +78,8 @@ jobs:
          repo sync
          rm kernel_platform/common/android/abi_gki_protected_exports_* || echo "No protected exports!"
          rm kernel_platform/msm-kernel/android/abi_gki_protected_exports_* || echo "No protected exports!"
-         sed -i 's/ -dirty//g' kernel_platform/common/scripts/setlocalversion
-         sed -i 's/ -dirty//g' kernel_platform/msm-kernel/scripts/setlocalversion
+         sed -i 's/ -dirty$//' kernel_platform/common/scripts/setlocalversion
+         sed -i 's/ -dirty$//'; kernel_platform/msm-kernel/scripts/setlocalversion
 
       - name: Set up KernelSU Next
         if: github.event.inputs.KSUNEXT_ENABLED == 'true'
@@ -180,3 +180,9 @@ jobs:
         with:
          name: AnyKernel3_KernelSU_Next_${{ env.KSUVER }}_${{ github.event.inputs.FEIL }}
          path: ./AnyKernel3/*
+
+      - name: Upload boot.img
+        uses: actions/upload-artifact@v4
+        with:
+          name: boot.img
+          path: kernel_workspace/kernel_platform/out/msm-kernel-${{ github.event.inputs.CPUD }}-gki/dist/boot.img
